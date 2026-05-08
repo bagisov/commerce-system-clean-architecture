@@ -17,6 +17,9 @@ namespace CommerceSystem.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+            services.AddScoped<ISubCompanyRepository, SubCompanyRepository>();
+
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddDbContext<CommerceDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             return services;

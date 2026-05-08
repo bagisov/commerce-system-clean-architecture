@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/CommerceSystem.Api/CommerceSystem.Api.csproj" Id="b9d2ef5c-f02d-42a2-b1ae-c1e9c7b25357" />
     <Project Path="src/CommerceSystem.Application/CommerceSystem.Application.csproj" Id="372ea571-fa0d-4c5f-82fb-ce3025ba3318" />
