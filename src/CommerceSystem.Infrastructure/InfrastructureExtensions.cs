@@ -1,0 +1,25 @@
+﻿using CommerceSystem.Application.Interfaces;
+using CommerceSystem.Application.Interfaces.Repositories;
+using CommerceSystem.Domain.Entities;
+using CommerceSystem.Infrastructure.Persistence;
+using CommerceSystem.Infrastructure.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CommerceSystem.Infrastructure
+{
+    public static class InfrastructureExtensions
+    {
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddDbContext<CommerceDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            return services;
+        }
+    }
+}

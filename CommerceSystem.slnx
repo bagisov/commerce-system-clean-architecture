@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CommerceSystem.Api/CommerceSystem.Api.csproj" Id="b9d2ef5c-f02d-42a2-b1ae-c1e9c7b25357" />
+    <Project Path="src/CommerceSystem.Application/CommerceSystem.Application.csproj" Id="372ea571-fa0d-4c5f-82fb-ce3025ba3318" />
+    <Project Path="src/CommerceSystem.Common/CommerceSystem.Common.csproj" Id="ed8baf6d-9431-4359-90d5-e4864cc1fc92" />
+    <Project Path="src/CommerceSystem.Domain/CommerceSystem.Domain.csproj" Id="a42a7172-782c-40f4-93bb-f31c00e4f5ef" />
+    <Project Path="src/CommerceSystem.Infrastructure/CommerceSystem.Infrastructure.csproj" Id="047bfc38-03e8-4e5a-a970-156f3c7bdf88" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CommerceSystem.Tests/CommerceSystem.Tests.csproj" Id="6312a0ce-947a-4616-8397-a98e720df5f7" />
+  </Folder>
+</Solution>
