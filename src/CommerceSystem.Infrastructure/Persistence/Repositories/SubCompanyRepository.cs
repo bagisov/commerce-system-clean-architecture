@@ -40,5 +40,9 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
         {
             return await _context.SubCompanies.FirstOrDefaultAsync(x=> x.Id == id, cancellationToken);
         }
+        public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.SubCompanies.AnyAsync(x => x.Id == id, cancellationToken);
+        }
     }
 }

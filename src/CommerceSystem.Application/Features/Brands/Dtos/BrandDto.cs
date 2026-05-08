@@ -3,15 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommerceSystem.Domain.Entities
+namespace CommerceSystem.Application.Features.Brands.Dtos
 {
-    public class Brand
+    public class BrandDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public EntityStatus Status { get; set; } = EntityStatus.Active;
-        public Guid SubCompanyId { get; set; }
-        public DateTime JoinedSubCompanyAtUtc { get; set; } = DateTime.UtcNow;
 
+        public string Name { get; set; } = null!;
+
+        public Guid SubCompanyId { get; set; }
+
+        public DateTime JoinedSubCompanyAtUtc { get; set; }
+
+        public EntityStatus Status { get; set; }
     }
 }

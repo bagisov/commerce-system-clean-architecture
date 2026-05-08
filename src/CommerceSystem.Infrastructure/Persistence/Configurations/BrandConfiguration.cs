@@ -20,6 +20,9 @@ namespace CommerceSystem.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Status)
                    .IsRequired();
 
+            builder.Property(x => x.JoinedSubCompanyAtUtc)
+                .IsRequired();
+
             // Brand → SubCompany
             builder.HasOne<SubCompany>()
                    .WithMany()

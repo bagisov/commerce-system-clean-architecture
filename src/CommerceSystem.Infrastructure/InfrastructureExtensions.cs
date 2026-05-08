@@ -18,6 +18,8 @@ namespace CommerceSystem.Infrastructure
         {
             services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
             services.AddScoped<ISubCompanyRepository, SubCompanyRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

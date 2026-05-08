@@ -12,5 +12,6 @@ namespace CommerceSystem.Application.Interfaces.Repositories
         Task<List<SubCompany>> GetAllAsync(CancellationToken cancellationToken);
         Task<SubCompany?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         void Delete(SubCompany subCompany);
+        Task<bool> ExistsByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }
