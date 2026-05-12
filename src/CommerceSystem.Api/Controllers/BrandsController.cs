@@ -1,6 +1,8 @@
-﻿using CommerceSystem.Application.Features.Brands.Commands.CreateBrand;
+﻿using CommerceSystem.Application.Features.Brands.Commands.ChangeBrandSubCompany;
+using CommerceSystem.Application.Features.Brands.Commands.CreateBrand;
 using CommerceSystem.Application.Features.Brands.Dtos;
 using CommerceSystem.Application.Features.Brands.Queries.GetBrands;
+using CommerceSystem.Application.Features.Brands.Queries.GetBrandSubCompanyHistory;
 using CommerceSystem.Application.Features.Brands.Queries.GetBrendById;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +44,31 @@ namespace CommerceSystem.Api.Controllers
         public async Task<ActionResult<List<BrandDto>>> GetAll(CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new GetBrandsQuery(),cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost("change-sub-company")]
+        public async Task<ActionResult<BrandDto>> ChangeSubCompany(ChangeBrandSubCompanyCommand command, 
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpGet("sub-company-changes/{id}")]
+        public async Task<ActionResult<List<BrandSubCompanyHistoryDto>>> GetHistory(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(
+                new GetBrandSubCompanyHistoryQuery
+                {
+                    BrandId = id
+                },
+                cancellationToken);
+
             return Ok(result);
         }
 

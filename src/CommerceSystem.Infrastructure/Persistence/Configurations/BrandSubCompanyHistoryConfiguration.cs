@@ -17,14 +17,14 @@ namespace CommerceSystem.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.LeftAtUtc).IsRequired();
 
-            builder.HasOne<Brand>()
-                .WithMany()
-                .HasForeignKey(x => x.BrandId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne<SubCompany>()
+            builder.HasOne(x => x.SubCompany)
                 .WithMany()
                 .HasForeignKey(x => x.SubCompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Brand)
+                .WithMany()
+                .HasForeignKey(x => x.BrandId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

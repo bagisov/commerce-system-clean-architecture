@@ -10,7 +10,11 @@ namespace CommerceSystem.Domain.Entities
 
         public Guid BrandId { get; set; }
 
+        public Brand Brand { get; set; } = null!;
+
         public Guid SubCompanyId { get; set; }
+
+        public SubCompany SubCompany { get; set; } = null!;
 
         public DateTime EnteredAtUtc { get; set; }
 

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CommerceSystem.Application.Features.SubCompanies.Commands.UpdateSubCompany
 {
-    public class UpdateSubCompanyCommandHandler : IRequestHandler<UpdateSubCompanyCommand, SubCompanyDto>
+    public class UpdateSubCompanyCommandHandler : IRequestHandler<UpdateSubCompanyCommand, SubCompanyDto?>
     {
         private readonly ISubCompanyRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
