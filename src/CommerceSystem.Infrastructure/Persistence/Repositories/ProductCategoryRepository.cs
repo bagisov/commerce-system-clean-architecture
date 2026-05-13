@@ -28,7 +28,9 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
 
         public async Task<List<ProductCategory>> GetAllAsync()
         {
-            return await _context.ProductCategories.ToListAsync();
+            return await _context.ProductCategories
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
         public async Task<ProductCategory?> GetByIdAsync(Guid id)

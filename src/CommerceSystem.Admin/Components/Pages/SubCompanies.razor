@@ -1,0 +1,181 @@
+﻿@page "/sub-companies"
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Sub Companies</h3>
+
+<h4>Add Sub Company</h4>
+
+<input class="form-control"
+       @bind="newSubCompany.Name"
+       placeholder="Sub company name" />
+
+<br />
+
+<button class="btn btn-success"
+        @onclick="CreateSubCompany">
+    Add
+</button>
+
+<hr />
+
+@if (subCompanies == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var subCompany in subCompanies)
+            {
+                <tr>
+                    <td>@subCompany.Name</td>
+                    <td>@subCompany.Status</td>
+
+                    <td>
+                        <button class="btn btn-primary"
+                                @onclick="() => EditSubCompany(subCompany)">
+                            Edit
+                        </button>
+
+                        <button class="btn btn-danger"
+                                @onclick="() => DeleteSubCompany(subCompany.Id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (selectedSubCompany != null)
+{
+    <hr />
+
+    <h4>Edit Sub Company</h4>
+
+    <input class="form-control"
+           @bind="selectedSubCompany.Name" />
+
+    <br />
+
+    <select class="form-control"
+            @bind="selectedSubCompany.Status">
+        <option value="@EntityStatus.Active">Active</option>
+        <option value="@EntityStatus.Inactive">Inactive</option>
+    </select>
+
+    <br />
+
+    <button class="btn btn-success"
+            @onclick="UpdateSubCompany">
+        Save
+    </button>
+}
+
+@code {
+
+    private List<SubCompanyDto>? subCompanies;
+
+    private SubCompanyDto? selectedSubCompany;
+
+    private CreateSubCompanyDto newSubCompany = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubCompanies();
+    }
+
+    private async Task LoadSubCompanies()
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        subCompanies = await client.GetFromJsonAsync<List<SubCompanyDto>>(
+            "api/sub-companies");
+    }
+
+    private async Task CreateSubCompany()
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        await client.PostAsJsonAsync(
+            "api/sub-companies",
+            newSubCompany);
+
+        newSubCompany = new CreateSubCompanyDto();
+
+        await LoadSubCompanies();
+    }
+
+    private void EditSubCompany(SubCompanyDto subCompany)
+    {
+        selectedSubCompany = new SubCompanyDto
+        {
+            Id = subCompany.Id,
+            Name = subCompany.Name,
+            Status = subCompany.Status
+        };
+    }
+
+    private async Task UpdateSubCompany()
+    {
+        if (selectedSubCompany == null)
+            return;
+
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        await client.PutAsJsonAsync(
+            "api/sub-companies",
+            selectedSubCompany);
+
+        await LoadSubCompanies();
+
+        selectedSubCompany = null;
+    }
+
+    private async Task DeleteSubCompany(Guid id)
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        var response = await client.DeleteAsync(
+            $"api/sub-companies/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadSubCompanies();
+        }
+
+        selectedSubCompany = null;
+    }
+
+    public class SubCompanyDto
+    {
+        public Guid Id { get; set; }
+
+        public string Name { get; set; } = null!;
+
+        public EntityStatus Status { get; set; }
+    }
+
+    public enum EntityStatus
+    {
+        Active = 1,
+        Inactive = 2
+    }
+
+
+    public class CreateSubCompanyDto
+    {
+        public string Name { get; set; } = null!;
+    }
+}

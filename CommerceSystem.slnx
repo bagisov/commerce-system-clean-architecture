@@ -4,6 +4,7 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/CommerceSystem.Admin/CommerceSystem.Admin.csproj" Id="df23f8b4-2583-468d-9969-ec9f211175e9" />
     <Project Path="src/CommerceSystem.Api/CommerceSystem.Api.csproj" Id="b9d2ef5c-f02d-42a2-b1ae-c1e9c7b25357" />
     <Project Path="src/CommerceSystem.Application/CommerceSystem.Application.csproj" Id="372ea571-fa0d-4c5f-82fb-ce3025ba3318" />
     <Project Path="src/CommerceSystem.Common/CommerceSystem.Common.csproj" Id="ed8baf6d-9431-4359-90d5-e4864cc1fc92" />

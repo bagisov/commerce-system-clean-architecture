@@ -1,0 +1,195 @@
+﻿@page "/brands"
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Brands</h3>
+
+<h4>Add Brand</h4>
+
+<input class="form-control" @bind="newBrand.Name" placeholder="Brand name" />
+<br />
+
+<select class="form-control" @bind="newBrand.SubCompanyId">
+    <option value="">Select sub-company</option>
+    @foreach (var subCompany in subCompanies ?? new())
+    {
+        <option value="@subCompany.Id">@subCompany.Name</option>
+    }
+</select>
+
+<br />
+
+<button class="btn btn-success" @onclick="CreateBrand">
+    Add
+</button>
+
+<hr />
+
+@if (brands == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sub Company</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var brand in brands)
+            {
+                <tr>
+                    <td>@brand.Name</td>
+                    <td>@brand.SubCompanyId</td>
+                    <td>@brand.Status</td>
+                    <td>@brand.JoinedSubCompanyAtUtc</td>
+                    <td>
+                     @*    <button class="btn btn-primary"
+                                @onclick="() => EditBrand(brand)">
+                            Edit
+                        </button>
+
+                        <button class="btn btn-danger"
+                                @onclick="() => DeleteBrand(brand.Id)">
+                            Delete
+                        </button> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (selectedBrand != null)
+{
+    <hr />
+
+    <h4>Edit Brand</h4>
+
+    <input class="form-control" @bind="selectedBrand.Name" />
+    <br />
+
+    <select class="form-control" @bind="selectedBrand.Status">
+        <option value="@EntityStatus.Active">Active</option>
+        <option value="@EntityStatus.Inactive">Inactive</option>
+    </select>
+
+    <br />
+
+    <button class="btn btn-success" @onclick="UpdateBrand">
+        Save
+    </button>
+}
+
+@code {
+    private List<BrandDto>? brands;
+    private List<SubCompanyDto>? subCompanies;
+
+    private BrandDto? selectedBrand;
+    private CreateBrandDto newBrand = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubCompanies();
+        await LoadBrands();
+    }
+
+    private async Task LoadBrands()
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        brands = await client.GetFromJsonAsync<List<BrandDto>>(
+            "api/brands");
+    }
+
+    private async Task LoadSubCompanies()
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        subCompanies = await client.GetFromJsonAsync<List<SubCompanyDto>>(
+            "api/sub-companies");
+    }
+
+    private async Task CreateBrand()
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        await client.PostAsJsonAsync("api/brands", newBrand);
+
+        newBrand = new CreateBrandDto();
+
+        await LoadBrands();
+    }
+
+    private void EditBrand(BrandDto brand)
+    {
+        selectedBrand = new BrandDto
+        {
+            Id = brand.Id,
+            Name = brand.Name,
+            SubCompanyId = brand.SubCompanyId,
+            JoinedSubCompanyAtUtc = brand.JoinedSubCompanyAtUtc,
+            Status = brand.Status
+        };
+    }
+
+    private async Task UpdateBrand()
+    {
+        if (selectedBrand == null)
+            return;
+
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        await client.PutAsJsonAsync("api/brands", selectedBrand);
+
+        await LoadBrands();
+
+        selectedBrand = null;
+    }
+
+    private async Task DeleteBrand(Guid id)
+    {
+        var client = HttpClientFactory.CreateClient("CommerceApi");
+
+        var response = await client.DeleteAsync($"api/brands/{id}");
+
+        if (response.IsSuccessStatusCode)
+            await LoadBrands();
+
+        selectedBrand = null;
+    }
+
+    public class BrandDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public Guid SubCompanyId { get; set; }
+        public DateTime JoinedSubCompanyAtUtc { get; set; }
+        public EntityStatus Status { get; set; }
+    }
+
+    public class CreateBrandDto
+    {
+        public string Name { get; set; } = null!;
+        public Guid SubCompanyId { get; set; }
+    }
+
+    public class SubCompanyDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public EntityStatus Status { get; set; }
+    }
+
+    public enum EntityStatus
+    {
+        Active = 1,
+        Inactive = 2
+    }
+}

@@ -20,6 +20,9 @@ namespace CommerceSystem.Infrastructure
             services.AddScoped<ISubCompanyRepository, SubCompanyRepository>();
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IBrandSubCompanyHistoryRepository, BrandSubCompanyHistoryRepository>();
+            services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped<IColorRepository, ColorRepository>();
+            services.AddScoped<ISizeRepository, SizeRepository>();
 
 
 

@@ -3,16 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommerceSystem.Domain.Entities
+namespace CommerceSystem.Application.Features.Branches.Dtos
 {
-    public class Branch
+    public class BranchDto
     {
         public Guid Id { get; set; }
+
         public Guid BrandId { get; set; }
-        public Brand Brand { get; set; } = null!;
+
+        public string BrandName { get; set; } = null!;
+
         public string Name { get; set; } = null!;
+
         public string Address { get; set; } = null!;
-        public EntityStatus Status { get; set; } = EntityStatus.Active;
-        public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+
+        public EntityStatus Status { get; set; }
+
+        public DateTime CreatedAtUtc { get; set; }
     }
 }

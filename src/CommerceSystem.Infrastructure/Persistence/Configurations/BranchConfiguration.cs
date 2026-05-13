@@ -24,11 +24,13 @@ namespace CommerceSystem.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Status)
                    .IsRequired();
 
-            // Branch → Brand
-            builder.HasOne<Brand>()
-                   .WithMany()
-                   .HasForeignKey(x => x.BrandId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            builder.Property(x => x.CreatedAtUtc)
+                    .IsRequired();
+
+            builder.HasOne(x => x.Brand)
+                    .WithMany()
+                    .HasForeignKey(x => x.BrandId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

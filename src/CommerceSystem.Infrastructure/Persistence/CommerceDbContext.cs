@@ -20,6 +20,8 @@ namespace CommerceSystem.Infrastructure.Persistence
         public DbSet<BranchProduct> BranchProducts { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<BrandSubCompanyHistory> BrandSubCompanyHistories { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Size> Sizes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
