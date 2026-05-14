@@ -1,0 +1,32 @@
+﻿using CommerceSystem.Common;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CommerceSystem.Application.Features.ProductVariants.Dtos
+{
+    public class ProductVariantDto
+    {
+        public Guid Id { get; set; }
+
+        public Guid ProductModelId { get; set; }
+        public string ProductModelName { get; set; } = null!;
+
+        public Guid BrandId { get; set; }
+        public string BrandName { get; set; } = null!;
+
+        public Guid CategoryId { get; set; }
+        public string CategoryName { get; set; } = null!;
+
+        public Guid ColorId { get; set; }
+        public string ColorName { get; set; } = null!;
+
+        public Guid SizeId { get; set; }
+        public string SizeName { get; set; } = null!;
+
+        public decimal PurchasePrice { get; set; }
+        public decimal BaseSellingPrice { get; set; }
+
+        public EntityStatus Status { get; set; }
+    }
+}

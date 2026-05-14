@@ -8,5 +8,6 @@ namespace CommerceSystem.Application.Interfaces.Repositories
     public interface IColorRepository
     {
         Task<List<Color>> GetAllAsync(CancellationToken cancellation);
+        Task<Color?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

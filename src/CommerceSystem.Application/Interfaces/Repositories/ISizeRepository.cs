@@ -8,5 +8,6 @@ namespace CommerceSystem.Application.Interfaces.Repositories
     public interface ISizeRepository
     {
         Task<List<Size>> GetAllAsync(CancellationToken cancellationToken);
+        Task<Size?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

@@ -22,5 +22,10 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
                 .OrderBy(x => x.SortOrder)
                 .ToListAsync(cancellationToken);
         }
+        public async Task<Size?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Sizes
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
     }
 }
