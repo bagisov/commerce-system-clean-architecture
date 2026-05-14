@@ -1,0 +1,258 @@
+﻿@page "/product-variants"
+@using CommerceSystem.Admin.Components.Dtos
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Product Variants</h3>
+
+<div class="row">
+
+    <div class="col-md-3 mb-3">
+        <label>Brand</label>
+
+        <select class="form-control" @bind="search.BrandId">
+            <option value="">All</option>
+
+            @foreach (var brand in brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <label>Category</label>
+
+        <select class="form-control" @bind="search.CategoryId">
+            <option value="">All</option>
+
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <label>Product</label>
+
+        <select class="form-control" @bind="search.ProductModelId">
+            <option value="">All</option>
+
+            @foreach (var product in productModels)
+            {
+                <option value="@product.Id">
+                    @product.BrandName - @product.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <label>Status</label>
+
+        <select class="form-control" @bind="search.Status">
+            <option value="">All</option>
+
+            @foreach (var status in Enum.GetValues<EntityStatus>())
+            {
+                <option value="@status">@status</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label>Colors</label>
+
+        @foreach (var color in colors)
+        {
+            <div>
+                <input type="checkbox"
+                       checked="@search.ColorIds.Contains(color.Id)"
+                       @onchange="e => ToggleColor(color.Id, (bool)e.Value!)" />
+
+                <span>@color.Name</span>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Sizes</label>
+
+        @foreach (var size in sizes)
+        {
+            <div>
+                <input type="checkbox"
+                       checked="@search.SizeIds.Contains(size.Id)"
+                       @onchange="e => ToggleSize(size.Id, (bool)e.Value!)" />
+
+                <span>@size.Name</span>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mb-3">
+    <label>Search</label>
+
+    <input class="form-control"
+           @bind="search.SearchText" />
+</div>
+
+<button class="btn btn-primary" @onclick="Search">
+    Search
+</button>
+
+<hr />
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Product</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Purchase</th>
+            <th>Selling</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in productVariants)
+        {
+            <tr>
+                <td>@item.BrandName</td>
+                <td>@item.CategoryName</td>
+                <td>@item.ProductModelName</td>
+                <td>@item.ColorName</td>
+                <td>@item.SizeName</td>
+                <td>@item.PurchasePrice</td>
+                <td>@item.BaseSellingPrice</td>
+                <td>@item.Status</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+@code {
+
+    private HttpClient Client => HttpClientFactory.CreateClient("CommerceApi");
+
+    private List<ProductVariantDto> productVariants = new();
+
+    private List<BrandDto> brands = new();
+    private List<ProductCategoryDto> categories = new();
+    private List<ProductModelDto> productModels = new();
+    private List<ColorDto> colors = new();
+    private List<SizeDto> sizes = new();
+
+    private SearchProductVariantsRequest search = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await Client.GetFromJsonAsync<List<BrandDto>>("api/brands") ?? new();
+        categories = await Client.GetFromJsonAsync<List<ProductCategoryDto>>("api/product-categories") ?? new();
+        productModels = await Client.GetFromJsonAsync<List<ProductModelDto>>("api/product-models") ?? new();
+        colors = await Client.GetFromJsonAsync<List<ColorDto>>("api/colors") ?? new();
+        sizes = await Client.GetFromJsonAsync<List<SizeDto>>("api/sizes") ?? new();
+
+        await Search();
+    }
+
+    private async Task Search()
+    {
+        var query = new List<string>();
+
+        if (search.BrandId.HasValue)
+            query.Add($"BrandId={search.BrandId}");
+
+        if (search.CategoryId.HasValue)
+            query.Add($"CategoryId={search.CategoryId}");
+
+        if (search.ProductModelId.HasValue)
+            query.Add($"ProductModelId={search.ProductModelId}");
+
+        if (search.Status.HasValue)
+            query.Add($"Status={search.Status}");
+
+        foreach (var colorId in search.ColorIds)
+        {
+            query.Add($"ColorIds={colorId}");
+        }
+
+        foreach (var sizeId in search.SizeIds)
+        {
+            query.Add($"SizeIds={sizeId}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(search.SearchText))
+        {
+            query.Add($"SearchText={search.SearchText}");
+        }
+
+        var url = "api/product-variants";
+
+        if (query.Any())
+        {
+            url += "?" + string.Join("&", query);
+        }
+
+        productVariants =
+            await Client.GetFromJsonAsync<List<ProductVariantDto>>(url)
+            ?? new();
+    }
+
+    private void ToggleColor(Guid colorId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!search.ColorIds.Contains(colorId))
+            {
+                search.ColorIds.Add(colorId);
+            }
+        }
+        else
+        {
+            search.ColorIds.Remove(colorId);
+        }
+    }
+
+    private void ToggleSize(Guid sizeId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!search.SizeIds.Contains(sizeId))
+            {
+                search.SizeIds.Add(sizeId);
+            }
+        }
+        else
+        {
+            search.SizeIds.Remove(sizeId);
+        }
+    }
+
+    public class SearchProductVariantsRequest
+    {
+        public Guid? BrandId { get; set; }
+
+        public Guid? CategoryId { get; set; }
+
+        public Guid? ProductModelId { get; set; }
+
+        public List<Guid> ColorIds { get; set; } = new();
+
+        public List<Guid> SizeIds { get; set; } = new();
+
+        public EntityStatus? Status { get; set; }
+
+        public string? SearchText { get; set; }
+    }
+}

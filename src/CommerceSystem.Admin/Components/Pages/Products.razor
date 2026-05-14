@@ -1,0 +1,210 @@
+﻿@page "/products"
+@using CommerceSystem.Admin.Components.Dtos
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Products</h3>
+
+<hr />
+
+<h4>Add Product Model</h4>
+
+<div class="mb-3">
+    <label>Brand</label>
+    <select class="form-control" @bind="createProductModel.BrandId">
+        <option value="">Select brand</option>
+        @foreach (var brand in brands)
+        {
+            <option value="@brand.Id">@brand.Name</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3">
+    <label>Category</label>
+    <select class="form-control" @bind="createProductModel.CategoryId">
+        <option value="">Select category</option>
+        @foreach (var category in categories)
+        {
+            <option value="@category.Id">@category.Name</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3">
+    <label>Product Name</label>
+    <input class="form-control" @bind="createProductModel.Name" />
+</div>
+
+<button class="btn btn-primary" @onclick="CreateProductModel">Add Product</button>
+
+<hr />
+
+<h4>Product Models</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in productModels)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.BrandName</td>
+                <td>@product.CategoryName</td>
+                <td>
+                    <button class="btn btn-sm btn-secondary"
+                            @onclick="() => SelectProduct(product)">
+                        Select
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (selectedProduct is not null)
+{
+    <hr />
+
+    <h4>Add Variants for: @selectedProduct.Name</h4>
+
+    <div class="mb-3">
+        <label>Color</label>
+        <select class="form-control" @bind="createVariants.ColorId">
+            <option value="">Select color</option>
+            @foreach (var color in colors)
+            {
+                <option value="@color.Id">@color.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Sizes</label>
+        @foreach (var size in sizes)
+        {
+            <div>
+                <input type="checkbox"
+                       checked="@createVariants.SizeIds.Contains(size.Id)"
+                       @onchange="e => ToggleSize(size.Id, (bool)e.Value!)" />
+                <span>@size.Name</span>
+            </div>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label>Purchase Price</label>
+        <input class="form-control" type="number" @bind="createVariants.PurchasePrice" />
+    </div>
+
+    <div class="mb-3">
+        <label>Base Selling Price</label>
+        <input class="form-control" type="number" @bind="createVariants.BaseSellingPrice" />
+    </div>
+
+    <button class="btn btn-success" @onclick="CreateVariants">Add Variants</button>
+}
+
+@code {
+    private HttpClient Client => HttpClientFactory.CreateClient("CommerceApi");
+
+    private List<ProductModelDto> productModels = new();
+    private List<BrandDto> brands = new();
+    private List<ProductCategoryDto> categories = new();
+    private List<ColorDto> colors = new();
+    private List<SizeDto> sizes = new();
+
+    private ProductModelDto? selectedProduct;
+
+    private CreateProductModelRequest createProductModel = new();
+    private CreateProductVariantsRequest createVariants = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        productModels = await Client.GetFromJsonAsync<List<ProductModelDto>>("api/product-models") ?? new();
+        brands = await Client.GetFromJsonAsync<List<BrandDto>>("api/brands") ?? new();
+        categories = await Client.GetFromJsonAsync<List<ProductCategoryDto>>("api/product-categories") ?? new();
+        colors = await Client.GetFromJsonAsync<List<ColorDto>>("api/colors") ?? new();
+        sizes = await Client.GetFromJsonAsync<List<SizeDto>>("api/sizes") ?? new();
+    }
+
+    private async Task CreateProductModel()
+    {
+        var result = await Client.PostAsJsonAsync("api/product-models", createProductModel);
+
+        if (result.IsSuccessStatusCode)
+        {
+            createProductModel = new();
+            await LoadData();
+        }
+    }
+
+    private void SelectProduct(ProductModelDto product)
+    {
+        selectedProduct = product;
+
+        createVariants = new CreateProductVariantsRequest
+        {
+            ProductModelId = product.Id
+        };
+    }
+
+    private void ToggleSize(Guid sizeId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!createVariants.SizeIds.Contains(sizeId))
+                createVariants.SizeIds.Add(sizeId);
+        }
+        else
+        {
+            createVariants.SizeIds.Remove(sizeId);
+        }
+    }
+
+    private async Task CreateVariants()
+    {
+        if (selectedProduct is null)
+            return;
+
+        createVariants.ProductModelId = selectedProduct.Id;
+
+        var result = await Client.PostAsJsonAsync("api/product-variants", createVariants);
+
+        if (result.IsSuccessStatusCode)
+        {
+            createVariants = new CreateProductVariantsRequest
+            {
+                ProductModelId = selectedProduct.Id
+            };
+        }
+    }
+
+    public class CreateProductModelRequest
+    {
+        public Guid BrandId { get; set; }
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class CreateProductVariantsRequest
+    {
+        public Guid ProductModelId { get; set; }
+        public Guid ColorId { get; set; }
+        public List<Guid> SizeIds { get; set; } = new();
+        public decimal PurchasePrice { get; set; }
+        public decimal BaseSellingPrice { get; set; }
+    }
+}

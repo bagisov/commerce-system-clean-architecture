@@ -1,4 +1,5 @@
 ﻿using CommerceSystem.Application.Features.ProductVariants.Commands.CreateProductVariants;
+using CommerceSystem.Application.Features.ProductVariants.Queries.SearchProductVariants;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,16 @@ namespace CommerceSystem.Api.Controllers
         {
             var result = await _mediator.Send(
                 command,
+                cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search([FromQuery] SearchProductVariantsQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(
+                query,
                 cancellationToken);
 
             return Ok(result);
