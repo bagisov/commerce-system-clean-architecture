@@ -28,7 +28,7 @@ namespace CommerceSystem.Api.Controllers
 
             return Ok(result);
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] SearchProductVariantsQuery query, CancellationToken cancellationToken)
         {

@@ -18,11 +18,11 @@ namespace CommerceSystem.Application.Features.ProductVariants.Dtos
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = null!;
 
-        public Guid ColorId { get; set; }
-        public string ColorName { get; set; } = null!;
+        public Guid? ColorId { get; set; }
+        public string? ColorName { get; set; }
 
-        public Guid SizeId { get; set; }
-        public string SizeName { get; set; } = null!;
+        public Guid? SizeId { get; set; }
+        public string? SizeName { get; set; }
 
         public decimal PurchasePrice { get; set; }
         public decimal BaseSellingPrice { get; set; }

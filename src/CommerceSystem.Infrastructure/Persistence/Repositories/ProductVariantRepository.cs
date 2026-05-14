@@ -57,13 +57,13 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
             if (colorIds is { Count: > 0 })
             {
                 query = query.Where(x =>
-                    colorIds.Contains(x.ColorId));
+                    x.ColorId.HasValue && colorIds.Contains(x.ColorId.Value));
             }
 
             if (sizeIds is { Count: > 0 })
             {
                 query = query.Where(x =>
-                    sizeIds.Contains(x.SizeId));
+                    x.SizeId.HasValue && sizeIds.Contains(x.SizeId.Value));
             }
 
             if (status.HasValue)
@@ -85,15 +85,15 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
                         x.ProductModel.Name.ToLower().Contains(word) ||
                         x.ProductModel.Brand.Name.ToLower().Contains(word) ||
                         x.ProductModel.Category.Name.ToLower().Contains(word) ||
-                        x.Color.Name.ToLower().Contains(word) ||
-                        x.Size.Name.ToLower().Contains(word));
+                        (x.Color != null && x.Color.Name.ToLower().Contains(word)) ||
+                        (x.Size != null && x.Size.Name.ToLower().Contains(word)));
                 }
             }
 
             return await query
                 .OrderBy(x => x.ProductModel.Name)
-                .ThenBy(x => x.Color.Name)
-                .ThenBy(x => x.Size.SortOrder)
+                .ThenBy(x => x.Color != null ? x.Color.Name : "")
+                .ThenBy(x => x.Size != null ? x.Size.SortOrder : 0)
                 .ToListAsync(cancellationToken);
         }
 
@@ -109,8 +109,8 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ExistsAsync(
             Guid productModelId,
-            Guid colorId,
-            Guid sizeId,
+            Guid? colorId,
+            Guid? sizeId,
             CancellationToken cancellationToken)
         {
             return await _context.ProductVariants.AnyAsync(x =>

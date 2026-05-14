@@ -11,9 +11,9 @@ namespace CommerceSystem.Application.Features.ProductVariants.Commands.CreatePro
     {
         public Guid ProductModelId { get; set; }
 
-        public Guid ColorId { get; set; }
+        public Guid? ColorId { get; set; }
 
-        public List<Guid> SizeIds { get; set; } = new();
+        public List<Guid>? SizeIds { get; set; }
 
         public decimal PurchasePrice { get; set; }
 

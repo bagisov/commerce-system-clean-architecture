@@ -13,16 +13,6 @@ namespace CommerceSystem.Application.Features.ProductVariants.Commands.CreatePro
             RuleFor(x => x.ProductModelId)
                 .NotEmpty();
 
-            RuleFor(x => x.ColorId)
-                .NotEmpty();
-
-            RuleFor(x => x.SizeIds)
-                .NotNull()
-                .NotEmpty();
-
-            RuleForEach(x => x.SizeIds)
-                .NotEmpty();
-
             RuleFor(x => x.PurchasePrice)
                 .GreaterThanOrEqualTo(0);
 

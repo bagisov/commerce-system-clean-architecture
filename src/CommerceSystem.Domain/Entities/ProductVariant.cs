@@ -12,11 +12,11 @@ namespace CommerceSystem.Domain.Entities
         public Guid ProductModelId { get; set; }
         public ProductModel ProductModel { get; set; } = null!;
 
-        public Guid ColorId { get; set; }
-        public Color Color { get; set; } = null!;
+        public Guid? ColorId { get; set; }
+        public Color? Color { get; set; }
 
-        public Guid SizeId { get; set; }
-        public Size Size { get; set; } = null!;
+        public Guid? SizeId { get; set; }
+        public Size? Size { get; set; }
 
         public decimal PurchasePrice { get; set; }
 

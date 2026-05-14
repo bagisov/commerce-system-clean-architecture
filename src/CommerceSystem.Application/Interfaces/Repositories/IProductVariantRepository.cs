@@ -9,7 +9,7 @@ namespace CommerceSystem.Application.Interfaces.Repositories
     public interface IProductVariantRepository
     {
         Task<ProductVariant?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<bool> ExistsAsync(Guid productModelId, Guid colorId, Guid sizeId, CancellationToken cancellationToken);
+        Task<bool> ExistsAsync(Guid productModelId, Guid? colorId, Guid? sizeId, CancellationToken cancellationToken);
         Task AddAsync(ProductVariant productVariant, CancellationToken cancellationToken);
         Task<List<ProductVariant>> SearchAsync(
             Guid? brandId,

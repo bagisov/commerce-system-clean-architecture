@@ -34,11 +34,13 @@ namespace CommerceSystem.Infrastructure.Persistence.Configurations
             builder.HasOne(x => x.Color)
                 .WithMany()
                 .HasForeignKey(x => x.ColorId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Size)
                 .WithMany()
                 .HasForeignKey(x => x.SizeId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(x => new { x.ProductModelId, x.ColorId, x.SizeId })

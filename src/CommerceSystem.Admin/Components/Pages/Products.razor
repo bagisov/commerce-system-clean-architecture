@@ -92,7 +92,7 @@
         {
             <div>
                 <input type="checkbox"
-                       checked="@createVariants.SizeIds.Contains(size.Id)"
+                       checked="@(createVariants.SizeIds?.Contains(size.Id) == true)"
                        @onchange="e => ToggleSize(size.Id, (bool)e.Value!)" />
                 <span>@size.Name</span>
             </div>
@@ -157,12 +157,15 @@
 
         createVariants = new CreateProductVariantsRequest
         {
-            ProductModelId = product.Id
+            ProductModelId = product.Id,
+            SizeIds = new List<Guid>()
         };
     }
 
     private void ToggleSize(Guid sizeId, bool isChecked)
     {
+        createVariants.SizeIds ??= new List<Guid>();
+
         if (isChecked)
         {
             if (!createVariants.SizeIds.Contains(sizeId))
@@ -202,8 +205,8 @@
     public class CreateProductVariantsRequest
     {
         public Guid ProductModelId { get; set; }
-        public Guid ColorId { get; set; }
-        public List<Guid> SizeIds { get; set; } = new();
+        public Guid? ColorId { get; set; }
+        public List<Guid>? SizeIds { get; set; }
         public decimal PurchasePrice { get; set; }
         public decimal BaseSellingPrice { get; set; }
     }

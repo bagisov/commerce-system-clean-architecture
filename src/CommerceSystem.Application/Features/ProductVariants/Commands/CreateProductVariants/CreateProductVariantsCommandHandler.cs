@@ -40,21 +40,35 @@ namespace CommerceSystem.Application.Features.ProductVariants.Commands.CreatePro
             if (productModel is null)
                 throw new Exception("Product model not found.");
 
-            var color = await _colorRepository.GetByIdAsync(
-                request.ColorId,
-                cancellationToken);
+            Color? color = null;
 
-            if (color is null)
-                throw new Exception("Color not found.");
+            if (request.ColorId.HasValue)
+            {
+                color = await _colorRepository.GetByIdAsync(request.ColorId.Value, cancellationToken);
+
+                if (color is null)
+                    throw new Exception("Color not found.");
+            }
 
             var result = new List<ProductVariantDto>();
 
-            foreach (var sizeId in request.SizeIds.Distinct())
+            var sizeIds = request.SizeIds is { Count: > 0 }
+                ? request.SizeIds.Distinct().Cast<Guid?>().ToList()
+                : new List<Guid?> { null };
+            foreach (var sizeId in sizeIds)
             {
-                var size = await _sizeRepository.GetByIdAsync(sizeId, cancellationToken);
+                Size? size = null;
 
-                if (size is null)
-                    continue;
+                if (sizeId.HasValue)
+                {
+                    size = await _sizeRepository.GetByIdAsync(
+                        sizeId.Value,
+                        cancellationToken);
+
+                    if (size is null)
+                        continue;
+                }
+
 
                 var exists = await _productVariantRepository.ExistsAsync(
                     request.ProductModelId,
@@ -93,11 +107,11 @@ namespace CommerceSystem.Application.Features.ProductVariants.Commands.CreatePro
                     CategoryId = productModel.CategoryId,
                     CategoryName = productModel.Category.Name,
 
-                    ColorId = color.Id,
-                    ColorName = color.Name,
+                    ColorId = color?.Id,
+                    ColorName = color?.Name,
 
-                    SizeId = size.Id,
-                    SizeName = size.Name,
+                    SizeId = size?.Id,
+                    SizeName = size?.Name,
 
                     PurchasePrice = productVariant.PurchasePrice,
                     BaseSellingPrice = productVariant.BaseSellingPrice,

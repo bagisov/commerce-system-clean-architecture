@@ -45,10 +45,10 @@ namespace CommerceSystem.Application.Features.ProductVariants.Queries.SearchProd
                 CategoryName = x.ProductModel.Category.Name,
 
                 ColorId = x.ColorId,
-                ColorName = x.Color.Name,
+                ColorName = x.Color?.Name,
 
                 SizeId = x.SizeId,
-                SizeName = x.Size.Name,
+                SizeName = x.Size?.Name,
 
                 PurchasePrice = x.PurchasePrice,
                 BaseSellingPrice = x.BaseSellingPrice,

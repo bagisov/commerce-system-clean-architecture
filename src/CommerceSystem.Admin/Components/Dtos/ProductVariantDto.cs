@@ -13,11 +13,11 @@
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
 
-        public Guid ColorId { get; set; }
-        public string ColorName { get; set; } = string.Empty;
+        public Guid? ColorId { get; set; }
+        public string? ColorName { get; set; }
 
-        public Guid SizeId { get; set; }
-        public string SizeName { get; set; } = string.Empty;
+        public Guid? SizeId { get; set; }
+        public string? SizeName { get; set; }
 
         public decimal PurchasePrice { get; set; }
 

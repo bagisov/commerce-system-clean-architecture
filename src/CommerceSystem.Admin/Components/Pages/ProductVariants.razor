@@ -130,8 +130,8 @@
                 <td>@item.BrandName</td>
                 <td>@item.CategoryName</td>
                 <td>@item.ProductModelName</td>
-                <td>@item.ColorName</td>
-                <td>@item.SizeName</td>
+                <td>@(item.ColorName ?? "-")</td>
+                <td>@(item.SizeName ?? "-")</td>
                 <td>@item.PurchasePrice</td>
                 <td>@item.BaseSellingPrice</td>
                 <td>@item.Status</td>
