@@ -16,12 +16,15 @@ namespace CommerceSystem.Infrastructure.Persistence
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Branch> Branches { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<BranchProduct> BranchProducts { get; set; }
+        public DbSet<BranchProductVariant> BranchProductVariants { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<BrandSubCompanyHistory> BrandSubCompanyHistories { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<ProductModel> ProductModels { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

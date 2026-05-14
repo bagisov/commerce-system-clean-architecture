@@ -23,6 +23,7 @@ namespace CommerceSystem.Infrastructure
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
             services.AddScoped<ISizeRepository, SizeRepository>();
+            services.AddScoped<IProductModelRepository, ProductModelRepository>();
 
 
 

@@ -4,6 +4,7 @@ using CommerceSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommerceSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(CommerceDbContext))]
-    partial class CommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260513153835_ReplaceProductWithProductModelAndVariant")]
+    partial class ReplaceProductWithProductModelAndVariant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace CommerceSystem.Infrastructure.Migrations
                     b.ToTable("Branches");
                 });
 
-            modelBuilder.Entity("CommerceSystem.Domain.Entities.BranchProductVariant", b =>
+            modelBuilder.Entity("CommerceSystem.Domain.Entities.BranchProduct", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -373,7 +376,7 @@ namespace CommerceSystem.Infrastructure.Migrations
                     b.Navigation("Brand");
                 });
 
-            modelBuilder.Entity("CommerceSystem.Domain.Entities.BranchProductVariant", b =>
+            modelBuilder.Entity("CommerceSystem.Domain.Entities.BranchProduct", b =>
                 {
                     b.HasOne("CommerceSystem.Domain.Entities.Branch", "Branch")
                         .WithMany()

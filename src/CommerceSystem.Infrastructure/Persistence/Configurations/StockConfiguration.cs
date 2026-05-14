@@ -11,22 +11,25 @@ namespace CommerceSystem.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Stock> builder)
         {
+            builder.ToTable("Stocks");
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Quantity)
                    .IsRequired();
 
-            // Stock → Branch
-            builder.HasOne<Branch>()
+            builder.HasOne(x => x.Branch)
                    .WithMany()
                    .HasForeignKey(x => x.BranchId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            // Stock → Product
-            builder.HasOne<Product>()
+            builder.HasOne(x => x.ProductVariant)
                    .WithMany()
-                   .HasForeignKey(x => x.ProductId)
+                   .HasForeignKey(x => x.ProductVariantId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => new { x.BranchId, x.ProductVariantId })
+                   .IsUnique();
         }
     }
 }

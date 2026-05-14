@@ -7,26 +7,29 @@ using System.Text;
 
 namespace CommerceSystem.Infrastructure.Persistence.Configurations
 {
-    public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct>
+    public class BranchProductVariantConfiguration : IEntityTypeConfiguration<BranchProductVariant>
     {
-        public void Configure(EntityTypeBuilder<BranchProduct> builder)
+        public void Configure(EntityTypeBuilder<BranchProductVariant> builder)
         {
+            builder.ToTable("BranchProductVariants");
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Status)
                    .IsRequired();
 
-            // BranchProduct → Branch
-            builder.HasOne<Branch>()
+            builder.HasOne(x => x.Branch)
                    .WithMany()
                    .HasForeignKey(x => x.BranchId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            // BranchProduct → Product
-            builder.HasOne<Product>()
+            builder.HasOne(x => x.ProductVariant)
                    .WithMany()
-                   .HasForeignKey(x => x.ProductId)
+                   .HasForeignKey(x => x.ProductVariantId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => new { x.BranchId, x.ProductVariantId })
+                   .IsUnique();
         }
     }
 }

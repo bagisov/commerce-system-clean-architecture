@@ -10,7 +10,7 @@ namespace CommerceSystem.Application.Interfaces.Repositories
         Task<bool> ExistsByNameAsync(string name);
         Task AddAsync(ProductCategory category);
         Task<List<ProductCategory>> GetAllAsync();
-        Task<ProductCategory?> GetByIdAsync(Guid id);
+        Task<ProductCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task DeleteAsync(ProductCategory category);
     }
 }

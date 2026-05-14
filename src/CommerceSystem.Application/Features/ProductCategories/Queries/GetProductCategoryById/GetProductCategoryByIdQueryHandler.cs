@@ -18,7 +18,7 @@ namespace CommerceSystem.Application.Features.ProductCategories.Queries.GetProdu
 
         public async Task<ProductCategoryDto?> Handle(GetProductCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetByIdAsync(request.Id);
+            var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (entity == null)
             {
                 return null;

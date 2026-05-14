@@ -33,10 +33,10 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ProductCategory?> GetByIdAsync(Guid id)
+        public async Task<ProductCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.ProductCategories
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
         public async Task DeleteAsync(ProductCategory category)

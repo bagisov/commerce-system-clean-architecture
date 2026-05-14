@@ -8,7 +8,9 @@ namespace CommerceSystem.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid BranchId { get; set; }
-        public Guid ProductId { get; set; }
+        public Branch Branch { get; set; } = null!;
+        public Guid ProductVariantId { get; set; }
+        public ProductVariant ProductVariant { get; set; } = null!;
         public int Quantity { get; set; }
     }
 }

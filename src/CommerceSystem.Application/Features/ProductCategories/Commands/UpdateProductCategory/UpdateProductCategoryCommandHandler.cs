@@ -22,7 +22,7 @@ namespace CommerceSystem.Application.Features.ProductCategories.Commands.UpdateP
 
         public async Task<ProductCategoryDto?> Handle(UpdateProductCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetByIdAsync(request.Id);
+            var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (entity == null)
             {
                 return null;
