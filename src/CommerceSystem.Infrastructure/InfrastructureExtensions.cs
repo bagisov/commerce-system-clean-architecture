@@ -25,6 +25,7 @@ namespace CommerceSystem.Infrastructure
             services.AddScoped<ISizeRepository, SizeRepository>();
             services.AddScoped<IProductModelRepository, ProductModelRepository>();
             services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
+            services.AddScoped<IBranchProductVariantRepository, BranchProductVariantRepository>();
 
 
 

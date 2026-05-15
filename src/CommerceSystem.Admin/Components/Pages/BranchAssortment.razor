@@ -1,0 +1,217 @@
+﻿@page "/branch-assortment"
+@using CommerceSystem.Admin.Components.Dtos
+@rendermode InteractiveServer
+@inject IHttpClientFactory HttpClientFactory
+
+<h3>Branch Assortment</h3>
+
+<div class="mb-3">
+    <label>Branch</label>
+    <select class="form-control"
+            @bind="request.BranchId"
+            @bind:after="LoadBranchAssortments">
+        <option value="">Select branch</option>
+        @foreach (var branch in branches)
+        {
+            <option value="@branch.Id">@branch.Name</option>
+        }
+    </select>
+</div>
+
+<hr />
+
+<h4>Existing Assortment</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Product</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in branchAssortments)
+        {
+            <tr>
+                <td>@item.BrandName</td>
+                <td>@item.CategoryName</td>
+                <td>@item.ProductModelName</td>
+                <td>@(item.ColorName ?? "-")</td>
+                <td>@(item.SizeName ?? "-")</td>
+                <td>@item.BaseSellingPrice</td>
+                <td>@item.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h4>Add Products To Branch</h4>
+
+<input class="form-control mb-3"
+       placeholder="Search product..."
+       @bind="searchText" />
+
+<button class="btn btn-primary mb-3" @onclick="SearchVariants">
+    Search
+</button>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Product</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in productVariants)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox"
+                           checked="@request.ProductVariantIds.Contains(item.Id)"
+                           disabled="@IsAlreadyAdded(item.Id)"
+                           @onchange="e => ToggleVariant(item.Id, (bool)e.Value!)" />
+                </td>
+                <td>@item.BrandName</td>
+                <td>@item.CategoryName</td>
+                <td>@item.ProductModelName</td>
+                <td>@(item.ColorName ?? "-")</td>
+                <td>@(item.SizeName ?? "-")</td>
+                <td>@item.BaseSellingPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-success" @onclick="AddToBranch">
+    Add Selected To Branch
+</button>
+
+@if (!string.IsNullOrWhiteSpace(message))
+{
+    <p class="mt-3">@message</p>
+}
+
+@code {
+    private HttpClient Client => HttpClientFactory.CreateClient("CommerceApi");
+
+    private List<BranchDto> branches = new();
+    private List<ProductVariantDto> productVariants = new();
+    private List<BranchProductVariantDto> branchAssortments = new();
+
+    private CreateBranchProductVariantsRequest request = new();
+
+    private string? searchText;
+    private string? message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        branches = await Client.GetFromJsonAsync<List<BranchDto>>("api/branches") ?? new();
+
+        await SearchVariants();
+    }
+
+    private async Task LoadBranchAssortments()
+    {
+        message = null;
+        request.ProductVariantIds.Clear();
+
+        if (request.BranchId == Guid.Empty)
+        {
+            branchAssortments = new();
+            return;
+        }
+
+        branchAssortments =
+            await Client.GetFromJsonAsync<List<BranchProductVariantDto>>(
+                $"api/branch-product-variants?BranchId={request.BranchId}")
+            ?? new();
+    }
+
+    private async Task SearchVariants()
+    {
+        var url = "api/product-variants";
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            url += $"?SearchText={Uri.EscapeDataString(searchText)}";
+        }
+
+        productVariants =
+            await Client.GetFromJsonAsync<List<ProductVariantDto>>(url)
+            ?? new();
+    }
+
+    private bool IsAlreadyAdded(Guid productVariantId)
+    {
+        return branchAssortments.Any(x => x.ProductVariantId == productVariantId);
+    }
+
+    private void ToggleVariant(Guid productVariantId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!request.ProductVariantIds.Contains(productVariantId))
+                request.ProductVariantIds.Add(productVariantId);
+        }
+        else
+        {
+            request.ProductVariantIds.Remove(productVariantId);
+        }
+    }
+
+    private async Task AddToBranch()
+    {
+        message = null;
+
+        if (request.BranchId == Guid.Empty)
+        {
+            message = "Please select branch.";
+            return;
+        }
+
+        if (!request.ProductVariantIds.Any())
+        {
+            message = "Please select at least one product.";
+            return;
+        }
+
+        var response = await Client.PostAsJsonAsync(
+            "api/branch-product-variants",
+            request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Products added to branch successfully.";
+
+            request.ProductVariantIds.Clear();
+
+            await LoadBranchAssortments();
+        }
+        else
+        {
+            message = "Failed to add products to branch.";
+        }
+    }
+
+    public class CreateBranchProductVariantsRequest
+    {
+        public Guid BranchId { get; set; }
+
+        public List<Guid> ProductVariantIds { get; set; } = new();
+
+        public EntityStatus Status { get; set; } = EntityStatus.Active;
+    }
+}

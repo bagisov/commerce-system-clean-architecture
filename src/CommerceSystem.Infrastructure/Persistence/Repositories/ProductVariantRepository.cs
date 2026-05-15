@@ -102,7 +102,9 @@ namespace CommerceSystem.Infrastructure.Persistence.Repositories
         {
             return await _context.ProductVariants
                 .Include(x => x.ProductModel)
-                .Include(x => x.Color)
+                    .ThenInclude(x => x.Brand)
+                .Include(x => x.ProductModel)
+                    .ThenInclude(x => x.Category).Include(x => x.Color)
                 .Include(x => x.Size)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
