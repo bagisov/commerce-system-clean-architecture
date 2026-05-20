@@ -23,6 +23,8 @@ namespace CommerceSystem.Infrastructure.Persistence
         public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductModel> ProductModels { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<StockBatch> StockBatches { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
 
 
 

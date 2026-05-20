@@ -4,6 +4,7 @@ using CommerceSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommerceSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(CommerceDbContext))]
-    partial class CommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520144357_AddStockBatch")]
+    partial class AddStockBatch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,42 +381,6 @@ namespace CommerceSystem.Infrastructure.Migrations
                     b.ToTable("StockBatches");
                 });
 
-            modelBuilder.Entity("CommerceSystem.Domain.Entities.StockMovement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MovementType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<Guid>("ProductVariantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("QuantityChange")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAtUtc");
-
-                    b.HasIndex("ProductVariantId");
-
-                    b.HasIndex("BranchId", "ProductVariantId");
-
-                    b.ToTable("StockMovements", (string)null);
-                });
-
             modelBuilder.Entity("CommerceSystem.Domain.Entities.SubCompany", b =>
                 {
                     b.Property<Guid>("Id")
@@ -555,25 +522,6 @@ namespace CommerceSystem.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("CommerceSystem.Domain.Entities.StockBatch", b =>
-                {
-                    b.HasOne("CommerceSystem.Domain.Entities.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CommerceSystem.Domain.Entities.ProductVariant", "ProductVariant")
-                        .WithMany()
-                        .HasForeignKey("ProductVariantId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("ProductVariant");
-                });
-
-            modelBuilder.Entity("CommerceSystem.Domain.Entities.StockMovement", b =>
                 {
                     b.HasOne("CommerceSystem.Domain.Entities.Branch", "Branch")
                         .WithMany()

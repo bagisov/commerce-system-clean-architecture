@@ -1,4 +1,6 @@
 ﻿using CommerceSystem.Application.Behaviours;
+using CommerceSystem.Application.Interfaces.Services;
+using CommerceSystem.Application.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ namespace CommerceSystem.Application.DependencyInjection
             services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddScoped<IStockService, StockService>();
 
             return services;
         }
